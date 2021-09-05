@@ -1,6 +1,19 @@
 #include<iostream>
-//#include<cmath>
-#define _USE_MATH_DEFINES
+
+enum CardSuit
+{
+	clubs,
+	spades,
+	heart,
+	diamonds
+};
+
+enum CardValue
+{
+	six = 6, seven, eight,
+	nine, ten, jack = 2,
+	lady, king, ace = 1
+};
 
 //TASK 1
 class Figure
@@ -156,8 +169,344 @@ public:
 //TASK 3
 class Fraction
 {
+	int whole;
 	int numerator;
 	int denomenator;
+
+	int commonDen(int denL, int denB)
+	{
+		int volL{ 1 }, volB{ 1 };
+		int tDenL{ denL }, tDenB{ denB };
+		while (true)
+		{
+			volL++;
+			tDenL = denL * volL;
+			if (tDenL < tDenB)
+				continue;
+			else if (tDenL > tDenB)
+			{
+				volB++;
+				tDenB = denB * volB;
+				if (tDenL == tDenB)
+					return tDenL;
+			}
+			else
+				return tDenL;
+		}
+	}
+
+	int greatestCommonDivisor(int a, int b) {
+		if (a % b == 0)
+			return b;
+		if (b % a == 0)
+			return a;
+		if (a > b)
+			return greatestCommonDivisor(a % b, b);
+		return greatestCommonDivisor(a, b % a);
+	}
+
+public:
+	Fraction(int _whole, int num, int den) :whole(_whole), numerator(num), denomenator(den)
+	{
+	} 
+
+	void get()
+	{
+		std::cout<<"Whole: "<<whole<< " Numerator: " << numerator << " Denomenator: " << denomenator << '\n';
+	}
+
+	Fraction* operator+(Fraction& obj)
+	{
+		int commDen{};
+		int tNum{ obj.whole * obj.denomenator + obj.numerator };
+		numerator = whole * denomenator + numerator;
+		whole = 0;
+		if (denomenator < obj.denomenator)
+		{
+			commDen = commonDen(denomenator, obj.denomenator);
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+
+			tNum *= (commDen / obj.denomenator);
+		}
+		else if (denomenator > obj.denomenator)
+		{
+			commDen = commonDen(obj.denomenator, denomenator);
+			tNum *= (commDen / obj.denomenator);
+			
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+		}
+	
+		numerator += tNum;
+		while (denomenator <= numerator)
+		{
+			numerator -= denomenator;
+			whole++;
+		}
+
+		int CommDiv{ greatestCommonDivisor(numerator,denomenator)};
+		numerator /= CommDiv;
+		denomenator /= CommDiv;
+
+		if (numerator == 0)
+			denomenator = 0;
+
+		return this;
+	}
+
+	Fraction* operator-(Fraction& obj)
+	{
+		int commDen{};
+		int tNum{ obj.whole* obj.denomenator + obj.numerator };
+		numerator = whole * denomenator + numerator;
+		whole = 0;
+		if (denomenator < obj.denomenator)
+		{
+			commDen = commonDen(denomenator, obj.denomenator);
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+
+			tNum *= (commDen / obj.denomenator);
+		}
+		else if (denomenator > obj.denomenator)
+		{
+			commDen = commonDen(obj.denomenator, denomenator);
+			tNum *= (commDen / obj.denomenator);
+
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+		}
+
+		numerator -= tNum;
+		while (denomenator <= numerator)
+		{
+			numerator -= denomenator;
+			whole++;
+		}
+
+		int CommDiv{ greatestCommonDivisor(numerator,denomenator) };
+		numerator /= CommDiv;
+		denomenator /= CommDiv;
+
+		if (numerator == 0)
+			denomenator = 0;
+
+		return this;
+	}
+
+	Fraction* operator*(Fraction& obj)
+	{
+		int commDen{};
+		int tNum{ obj.whole * obj.denomenator + obj.numerator }, tDen{ obj.denomenator };
+		numerator = whole * denomenator + numerator;
+		whole = 0;
+
+		numerator *= tNum;
+		denomenator *= tDen;
+		while (denomenator <= numerator)
+		{
+			numerator -= denomenator;
+			whole++;
+		}
+
+		int CommDiv{ greatestCommonDivisor(numerator,denomenator) };
+		numerator /= CommDiv;
+		denomenator /= CommDiv;
+
+		if (numerator == 0)
+			denomenator = 0;
+
+		return this;
+	}
+
+	Fraction* operator/(Fraction& obj)
+	{
+		int commDen{};
+		int tNum{ obj.whole * obj.denomenator + obj.numerator }, tDen{ obj.denomenator };
+		numerator = whole * denomenator + numerator;
+		whole = 0;
+
+		numerator *= tDen;
+		denomenator *= tNum;
+		while (denomenator <= numerator)
+		{
+			numerator -= denomenator;
+			whole++;
+		}
+
+		int CommDiv{ greatestCommonDivisor(numerator,denomenator) };
+		numerator /= CommDiv;
+		denomenator /= CommDiv;
+
+		if (numerator == 0)
+			denomenator = 0;
+
+		return this;
+	}
+ 
+	Fraction* operator-()
+	{
+		whole = -whole;
+		return this;
+	}
+
+	bool operator==(Fraction& obj)
+	{
+		if (denomenator == obj.denomenator)
+		{
+			if (numerator == obj.numerator)
+				return true;
+			else
+				return false;
+		}
+
+		int commDen{};
+		int tNum{ obj.whole * obj.denomenator + obj.numerator };
+		numerator = whole * denomenator + numerator;
+		whole = 0;
+		if (denomenator < obj.denomenator)
+		{
+			commDen = commonDen(denomenator, obj.denomenator);
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+
+			tNum *= (commDen / obj.denomenator);
+		}
+		else if (denomenator > obj.denomenator)
+		{
+			commDen = commonDen(obj.denomenator, denomenator);
+			tNum *= (commDen / obj.denomenator);
+
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+		}
+
+		if (numerator == obj.numerator)
+			return true;
+		else
+			return false;
+
+	}
+
+	bool operator!=(Fraction& obj)
+	{
+		if (*this == obj)
+			return false;
+		else
+			return true;
+	}
+
+	bool operator<(Fraction& obj)
+	{
+		{
+			if (numerator < obj.numerator)
+				return true;
+			else
+				return false;
+		}
+
+		int commDen{};
+		int tNum{ obj.whole * obj.denomenator + obj.numerator };
+		numerator = whole * denomenator + numerator;
+		whole = 0;
+		if (denomenator < obj.denomenator)
+		{
+			commDen = commonDen(denomenator, obj.denomenator);
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+
+			tNum *= (commDen / obj.denomenator);
+		}
+		else if (denomenator > obj.denomenator)
+		{
+			commDen = commonDen(obj.denomenator, denomenator);
+			tNum *= (commDen / obj.denomenator);
+
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+		}
+
+		if (numerator < obj.numerator)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator>(Fraction& obj)
+	{
+		if (denomenator == obj.denomenator)
+		{
+			if (numerator > obj.numerator)
+				return true;
+			else
+				return false;
+		}
+
+		int commDen{};
+		int tNum{ obj.whole * obj.denomenator + obj.numerator };
+		numerator = whole * denomenator + numerator;
+		whole = 0;
+		if (denomenator < obj.denomenator)
+		{
+			commDen = commonDen(denomenator, obj.denomenator);
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+
+			tNum *= (commDen / obj.denomenator);
+		}
+		else if (denomenator > obj.denomenator)
+		{
+			commDen = commonDen(obj.denomenator, denomenator);
+			tNum *= (commDen / obj.denomenator);
+
+			numerator *= (commDen / denomenator);
+			denomenator = commDen;
+		}
+
+		if (numerator > obj.numerator)
+			return true;
+		else
+			return false;
+	}
+
+	bool operator<=(Fraction& obj)
+	{
+		if (*this > obj)
+			return false;
+		else
+			return true;
+	}
+
+	bool operator>=(Fraction& obj)
+	{
+		if (*this < obj)
+			return false;
+		else
+			return true;
+	}
+};
+
+//TASK 4
+class Card
+{
+	CardSuit suit;
+	CardValue value;
+	bool position;
+public:
+	void Flip()
+	{
+		if (position)
+			position = false;
+		else
+			position = true;
+	}
+
+	int GetValue()
+	{
+		return value;
+	}
+
 };
 
 int main()
@@ -192,9 +541,31 @@ int main()
 	//Task 3
 	{
 		std::cout << "\n\nTask 3\n";
+		Fraction a(1, 9, 12);
+		Fraction b(1, 4, 7);
 
+		if (a != b)
+			std::cout << "true\n";
+		else
+			std::cout << "false\n";
+
+		if (a <= b)
+			std::cout << "true\n";
+		else
+			std::cout << "false\n";
+
+		a+b;
+		a.get();
+		a/b;
+		a.get();
+		-a;
+		a.get();
 
 	}
 
+	//Task 4
+	{
+		std::cout << "\n\nTask 4\n";
+	}
 }
 
