@@ -1,5 +1,5 @@
 #include<iostream>
-//Глобальная переменная для проверки знаменателя на ноль
+//a global variable to test the denominator for zero
 bool DZ{};
 
 enum CardSuit
