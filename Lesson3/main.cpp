@@ -1,4 +1,6 @@
 #include<iostream>
+//Глобальная переменная для проверки знаменателя на ноль
+bool DZ{};
 
 enum CardSuit
 {
@@ -208,6 +210,8 @@ class Fraction
 public:
 	Fraction(int _whole, int num, int den) :whole(_whole), numerator(num), denomenator(den)
 	{
+		if (den == 0)
+			DZ = true;
 	} 
 
 	void get()
@@ -543,6 +547,11 @@ int main()
 		std::cout << "\n\nTask 3\n";
 		Fraction a(1, 9, 12);
 		Fraction b(1, 4, 7);
+		if (DZ == true)
+		{
+			std::cout << "Division by zero";
+			return 0;
+		}
 
 		if (a != b)
 			std::cout << "true\n";
