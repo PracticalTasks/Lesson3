@@ -14,7 +14,7 @@ enum CardValue
 {
 	six = 6, seven, eight,
 	nine, ten, jack = 2,
-	lady, king, ace = 1
+	lady, king, ace = 11
 };
 
 //TASK 1
@@ -506,7 +506,7 @@ public:
 			position = true;
 	}
 
-	int GetValue()
+	CardValue GetValue()
 	{
 		return value;
 	}
